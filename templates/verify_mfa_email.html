@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFA Verification</title>
+</head>
+<body>
+    <h2>Multi-Factor Authentication</h2>
+    <p>An email containing a verification code has been sent to your email address.</p>
+    {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div id="messageDiv" class="flash-message">
+                    {% for msg in messages %}
+                        {{ msg }}<br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    <p>Please enter the code below:</p>
+    <form action="/verify_mfa_email" method="post">
+        <input type="text" name="mfa_code" placeholder="Enter MFA Code">
+        <input type="submit" value="Verify">
+    </form>
+</body>
+</html>

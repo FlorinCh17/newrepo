@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        #sidebar {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            width: 200px;
+            height: 96vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        button {
+            margin-bottom: 20px;
+            padding: 15px; /* Dimensiunea redusă pentru a arăta mai bine în design */
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%; /* Să ocupe 100% lățime */
+            align-self: center;
+        }
+
+        #logoutbutton {
+            margin-top: auto;
+            margin-bottom: 20px;
+            padding: 15px; /* Dimensiunea redusă pentru a arăta mai bine în design */
+            cursor: pointer;
+            background-color: #1a16e7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%; /* Să ocupe 100% lățime */
+            align-self: center;
+        }
+
+        button:hover, #logoutbutton:hover {
+            background-color: #45a049;
+        }
+        #fixedButton {
+            position: fixed;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+            margin-left: 88%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sidebar">
+        <h1 style="margin-top: 15px; align-self: left"> Hello, </h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="margin-bottom: 300px; align-self: left">
+                    {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <button onclick="location.href='/admindashbord'">Dashboard</button>
+        <button onclick="location.href='/voterManagement'">Voter Management</button>
+        <button onclick="location.href='/candidateManagement'">Candidate Management</button>
+        <button onclick="location.href='/finalResults'">Final Results</button>
+        <button onclick="location.href='/viewLedger'">View Ledger</button>
+        <button id="logoutbutton" onclick="location.href='/logout'">Logout</button>
+    </div>
+
+    <div id = "content" class="section">
+    {% if identity_dict %}
+        <h1>Request queue</h1>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>CNP</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Date of birth</th>
+                    <th>Nationality</th>
+                    <th>Criminal record</th>
+                    <th>Criminal record doc</th>
+                    <th>ID</th>
+                    <th>Problems with CR</th>
+                    <th>Problems with ID</th>
+                    <th>Alienated</th>
+                    <th>Residence</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, people in identity_dict.items() %}
+                {% for person in people %}
+                <tr>
+                    <form action="/request_queue" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="CNP" value="{{key}}">
+                        <input type="hidden" name="name" value="{{ person.name }}">
+                        <input type="hidden" name="email" value="{{ person.email }}">
+                        <input type="hidden" name="date_of_birth" value="{{ person.date_of_birth }}">
+                        <input type="hidden" name="nationality" value="{{ person.nationality }}">
+                        <input type="hidden" name="criminal_record" value="{{ person.criminal_record }}">
+                        <input type="hidden" name="myCheckbox3" value="No">
+
+                    <th>{{key}}</th>
+                    <th>{{person.name}}</th>
+                    <th>{{person.email}}</th>
+                    <th>{{person.date_of_birth}}</th>
+                    <th>{{person.nationality}}</th>
+                    <th>{{person.criminal_record}}</th>
+                    <th>  <a href="{{ url_for('static', filename='uploads/' +key+'/' + person.criminal_record_doc_name) }}" target="_blank">Check the file</a></th>
+                    <th>  <a href="{{ url_for('static', filename='uploads/' +key+'/' + person.id_name) }}" target="_blank">Check the ID</a></th>
+                    <th><input type="checkbox" id="myCheckbox1" name="myCheckbox1" value="Yes" ></th>
+                    <th><input type="checkbox" id="myCheckbox2" name="myCheckbox2" value="Yes" ></th>
+                    <th><input type="checkbox" id="myCheckbox3" name="myCheckbox3" value="Yes" ></th>
+                    <th><input type="checkbox" id="myCheckbox2" name="myCheckbox4" value="Yes" ></th>
+                </form>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </table>
+     </tbody>   
+
+    </div>
+    <button id="fixedButton" type="submit" >Apply</button>
+    {% else %}
+    <h1>There are no requests</h1>
+    {% endif %}
+    <script>
+        function openDocument(documentPath) {
+            window.open(documentPath, '_blank');
+        }
+    
+    document.getElementById("fixedButton").addEventListener("click", function() {
+        // Find all forms and submit them
+        var forms = document.querySelectorAll("form");
+        forms.forEach(function(form) {
+            form.submit();
+        });
+    });
+</script>
+</body>
+
+</html>
+

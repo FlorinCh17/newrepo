@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        #sidebar {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            width: 200px;
+            height: 100vh; /* Am setat 100vh pentru a acoperi întreaga înălțime a ecranului */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: fixed; /* Face elementul fix pe ecran */
+            overflow-y: auto; /* Adaugă o bara de derulare dacă conținutul depășește înălțimea */
+        }
+
+        #content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        button {
+            margin-bottom: 20px;
+            padding: 15px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            align-self: center;
+        }
+
+        #logoutbutton {
+            margin-top: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            cursor: pointer;
+            background-color: #1a16e7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            align-self: center;
+        }
+
+        button:hover, #logoutbutton:hover {
+            background-color: #45a049;
+        }
+
+        .contestant-box {
+            width: 500px;
+            height: 580px;
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid black;
+            margin-left: 260px; /* Ajustează acesta valoare pentru a seta spațiul dintre sidebar și boxuri */
+        }
+
+        .contestant-info {
+            margin: 5px 0;
+        }
+
+        .contestant-image img {
+            width: 350px;
+            height: 450px;
+            margin-bottom: 10px;
+        }
+
+        .contestant-image {
+            margin-top: 10px;
+        }
+
+        .section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sidebar">
+        <h1 style="margin-top: 15px; align-self: left"> Hello, </h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div >
+                    {{ messages[0] }}<br>
+            </div>
+            {%if messages[1] == "0" %}
+            <div style = "margin-bottom: 15px">Right to vote: <b style="color: red">No</b> </div>
+                {%else%}
+            <div style = "margin-bottom: 15px">Right to vote: <b style="color: rgb(0, 255, 34)">Yes</b> </div>
+            {% endif %}
+
+            <b style="color: hwb(165 2% 3%);"> {{messages[2]}}</b>
+            
+            <div style="margin-bottom: 300px; align-self: left" > The voting period starts on <b>{{start_vote}}</b> until <b>{{end_vote}}</b></div>
+            
+        {% endif %}
+        {% endwith %}
+        <button id="logoutbutton" onclick="location.href='/logout'">Logout</button>
+    </div>
+
+    <div class="section">
+            {% for key, contestants in identity_contestants.items() %}
+                <form class="contestant-box" action="/vote" method="post">
+                    {% for contestant in contestants %}
+                        <p class="contestant-info"><b>Name: {{ contestant['name'] }}</b></p>
+                        <div class="contestant-image">
+                            <img src='{{ url_for("static", filename="uploads/" + contestant["picture_name"]) }}' alt="Displayed Image" >
+                        </div>
+                        <p class="contestant-info"><b>Party: {{ contestant['party'] }}</b></p>
+                        <input type="hidden" name="my_variable" value="{{ key }}"></input>
+                        <button type = submit > Vote for {{ contestant['name'] }}</button>
+                        {% endfor %}
+                    </form>
+            {% endfor %}
+    </div>
+    
+</body>
+ </html>   

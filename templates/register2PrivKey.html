@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register to obtain the Private Key</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .flash-message {
+            background-color: #ff8a8a;
+            color: #fff;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+
+        /* Hide the form guide by default */
+        .form-guide {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 300px;
+            z-index: 1;
+        }
+
+        /* Style the guide container */
+        .form-container {
+            position: relative;
+        }
+
+        /* Show the form guide when hovering over the form container */
+        .form-container:hover .form-guide {
+            display: block;
+        }
+        select {
+            display: inline-block;
+            width: auto; /* Let it expand to fit its content */
+            margin-left: 10px; /* Adjust the spacing between label and select */
+        }
+
+
+        /* Apply styles to the label */
+        label[for="criminal_record"] {
+            display: inline-block; /* Display label as inline block */
+            width: 150px; /* Set a fixed width for the label (adjust as needed) */
+            font-weight: bold;
+            margin-right: 10px; /* Add some spacing between label and select */
+        }
+
+        /* Style the select dropdown */
+        select#criminal_record {
+            display: inline-block; /* Display select as inline block */
+            width: 90px; /* Set the desired width */
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Style the options within the dropdown */
+        select#criminal_record option {
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: center;
+            margin-left: 30%
+        }
+
+
+    </style>
+</head>
+<body>
+    {% block content %}
+        <div class="container">
+            <h1>Fill the form to obtain a Private Key</h1>
+
+            <form action="/obtain_private_key" method="post" enctype="multipart/form-data">
+                <label for="name">Name:</label>
+                <input type="text" name="name"  required placeholder="Enter you full name as in your ID">
+                
+                <label for="date_of_birth">Date of birth:</label>
+                <input type="text" name="date_of_birth" required placeholder="Date should have this format yyyy-mm-dd">
+                
+                <label for="CNP">CNP:</label>
+                <input type="text" name="CNP" required placeholder="Only numbers">
+
+                <label for="nationality">Nationality:</label>
+                <input type="text" name="nationality" required placeholder="As it's written in your ID">   
+
+                <label for="email">Email:</label>
+                <input type="text" name="email" required placeholder="Provide a email you have acces">   
+
+                <label for="criminal_record">Criminal record:</label>
+                <select id="criminal_record" name="criminal_record" required>
+                    <option ></option>
+                    <option value="clean">No</option>
+                    <option value="convicted">YES</option></select>
+
+                <label for="identity_document">Identity document proof:</label>
+                <input type="file" name="identity_document" accept="*/*">
+
+                <label for="criminat_record_document">Criminal record proof:</label>
+                <input type="file" name="criminal_record_document" accept="*/*">
+                
+                <button type="submit" >Send form</button>
+            </form>
+                
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div id = "messageDiv" class="flash-message">
+                        {% for msg in messages %}
+                            {{ msg }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% endblock %}
+
+            
+        </div>
+
+    <script>
+        // JavaScript code to hide the div after a certain duration
+        document.addEventListener('DOMContentLoaded', function () {
+            var messageDiv = document.getElementById('messageDiv');
+            
+            // Check if the element exists before attempting to hide it
+            if (messageDiv) {
+                // Set a timeout to hide the div after 15000 milliseconds (15 seconds)
+                setTimeout(function () {
+                    messageDiv.style.display = 'none';
+                }, 15000);
+            }
+        });
+
+                // JavaScript to open and close the modal
+        document.getElementById("openGuideBtn").onclick = function() {
+            document.getElementById("formGuideModal").style.display = "block";
+        }
+
+        // Close the modal when clicking on the close button or outside the modal
+        document.getElementsByClassName("close")[0].onclick = function() {
+            document.getElementById("formGuideModal").style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("formGuideModal")) {
+                document.getElementById("formGuideModal").style.display = "none";
+            }
+        }
+
+    </script>
+</body>
+</html>

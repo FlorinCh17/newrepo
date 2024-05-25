@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        #sidebar {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            width: 200px;
+            height: 96vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: fixed; 
+            overflow-y: auto;
+        }
+        #content {
+            flex: 1;
+            padding: 20px;
+            margin-left: 400px; /* Asigură că conținutul nu este acoperit de bara laterală */
+        }
+        button {
+            margin-bottom: 20px;
+            padding: 15px; /* Dimensiunea redusă pentru a arăta mai bine în design */
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%; /* Să ocupe 100% lățime */
+            align-self: center;
+        }
+        #logoutbutton {
+            margin-top: auto;
+            margin-bottom: 20px;
+            padding: 15px; /* Dimensiunea redusă pentru a arăta mai bine în design */
+            cursor: pointer;
+            background-color: #1a16e7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%; /* Să ocupe 100% lățime */
+            align-self: center;
+        }
+        button:hover, #logoutbutton:hover {
+            background-color: #45a049;
+        }
+        #true {
+            color: red;
+        }
+        #false {
+            color: rgb(0, 0, 0);
+        }
+        #fixedButton {
+            position: fixed;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+            margin-left: 80%;
+        }
+
+        .message {
+            text-align: center;
+            color: blue;
+            position: fixed;
+            margin-left: 80%;
+            margin-top: 590px; /* Ajustează acesta valoare pentru a plasa mesajul sub buton */
+            width: 200px;
+        }
+
+                table {
+            border: 1px solid #cccccc;
+        }
+
+        /* Add a light gray background to the table header and footer */
+        thead, tfoot {
+            background-color: #f0f0f0;
+        }
+
+        /* Center the text in the table cells */
+        th, td {
+            text-align: center;
+        }
+
+        /* Highlight the table rows that have the id attribute set to true */
+        tr[id="true"] {
+            background-color: #ffcccc;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="sidebar">
+        <h1 style="margin-top: 15px; align-self: left"> Hello, </h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="margin-bottom: 300px; align-self: left">
+                    {{ messages[0] }}
+            </div>
+          
+        {% endif %}
+        {% endwith %}
+        <button onclick="location.href='/admindashbord'">Dashboard</button>
+        <button onclick="location.href='/voterManagement'">Voter Management</button>
+        <button onclick="location.href='/candidateManagement'">Candidate Management</button>
+        <button onclick="location.href='/finalResults'">Final Results</button>
+        <button onclick="location.href='/viewLedger'">View Ledger</button>
+        <button id="logoutbutton" onclick="location.href='/logout'">Logout</button>
+    </div>
+        <div id = "content" class="section">
+            <h1>Lista Persoanelor</h1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date of birth</th>
+                        <th>CNP</th>
+                        <th>Criminal records</th>
+                        <th>Nationality</th>
+                        <th>Residence</th>
+                        <th>Alienated</th>
+                        <th>Vote</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, people in identity_dict.items() %}
+                    {% for person in people %}
+                        <tr>
+                            {% if person.criminal_records == "Yes" or person.residence != "Yes" or person.alienated != "No"%}
+                            <td id = "true">{{ person.name }}</td>
+                            <td id = "true">{{ person.date_of_b }}</td>
+                            <td id = "true">{{ person.CNP }}</td>
+                            <td id = "true">{{ person.criminal_records }}</td>
+                            <td id = "true">{{ person.nationality }}</td>
+                            <td id = "true">{{ person.residence }}</td>
+                            <td id = "true">{{ person.alienated }}</td>
+
+                            {% else %}
+                            <td id = "false">{{ person.name }}</td>
+                            <td id = "false">{{ person.date_of_b }}</td>
+                            <td id = "false">{{ person.CNP }}</td>
+                            <td id = "false">{{ person.criminal_records }}</td>
+                            <td id = "false">{{ person.nationality }}</td>
+                            <td id = "false">{{ person.residence }}</td>
+                            <td id = "false">{{ person.alienated }}</td> 
+                            {% endif %}  
+                            
+                            {% if person.vot != 0 %}                           
+                            <td id = "false">YES</td>  
+                            {% else %}   
+                            <td id = "true">NO</td>  
+                            {%endif%} 
+                            
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% if messages[-1] == "Votes are not distributed" %}
+                    <button id="fixedButton" onclick="location.href='/distribute_votes'">Distribute votes</button>
+                {%else%}
+                <button id="fixedButton">Votes are already distributed</button>
+                {%endif%}
+                <div id="messageDiv" class="message"><b>{{ messages[-3] }}</b></div>
+
+            {% endif %}
+        {% endwith %}
+
+        <script>
+            // JavaScript code to hide the div after a certain duration
+            document.addEventListener('DOMContentLoaded', function () {
+                var messageDiv = document.getElementById('messageDiv');
+                
+                // Check if the element exists before attempting to hide it
+                if (messageDiv) {
+                    // Set a timeout to hide the div after 15000 milliseconds (15 seconds)
+                    setTimeout(function () {
+                        messageDiv.style.display = 'none';
+                    }, 15000);
+                }
+            });
+        </script>
+
+</body>
+
+</html>
+

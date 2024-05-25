@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        #sidebar {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            width: 200px;
+            height: 96vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 300px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-section input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .form-section button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        button {
+            margin-bottom: 20px;
+            padding: 15px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        #logoutbutton {
+            margin-top: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            cursor: pointer;
+            background-color: #1a16e7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        button:hover, #logoutbutton:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 700px; /* Add some spacing above the message */
+            text-align: center; /* Center text horizontally */
+            color: blue; /* Change the color as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sidebar">
+        <h1 style="margin-top: 15px; align-self: left"> Hello, </h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="margin-bottom: 300px; align-self: left">
+                    {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <button onclick="location.href='/admindashbord'">Dashboard</button>
+        <button onclick="location.href='/voterManagement'">Voter Management</button>
+        <button onclick="location.href='/candidateManagement'">Candidate Management</button>
+        <button onclick="location.href='/finalResults'">Final Results</button>
+        <button onclick="location.href='/viewLedger'">View Ledger</button>
+        <button id="logoutbutton" onclick="location.href='/logout'">Logout</button>
+    </div>
+
+    <div id="content">
+        <div class="form-section">
+            <div><h1>Find a person</h1></div>
+            <form action="/findCandidate" method="post">
+                <label for="name">Name:</label>
+                <input type="text" name="name"  required>
+                
+                <label for="date_of_birth">Date of birth:</label>
+                <input type="text" name="date_of_birth" required>
+                
+                <label for="CNP">CNP:</label>
+                <input type="text" name="CNP" required>
+                
+                <label for="criminal_record">Criminal record:</label>
+                <input type="text" name="criminal_record" required>
+                
+                <label for="nationality">Nationality:</label>
+                <input type="text" name="nationality" required>
+
+                <button type="submit">Find private key</button>
+
+            </form>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {%if messages[0]!= messages[-1]%}
+            <div id="messageDiv" class="message">{{ messages[-1] }}</div>
+            
+
+        {% endif %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="form-section">
+            <div><h1>Submit candidate</h1></div>
+            <form action="submitCandidate" method="post" enctype="multipart/form-data">
+                <label for="submit_name">Name:</label>
+                <input type="text" name="submit_name" required>
+        
+                <label for="submit_private_key">Private Key:</label>
+                <input type="text" name="submit_private_key" required>
+        
+                <label for="political_party">Political Party:</label>
+                <input type="text" name="political_party" required>
+        
+                <label for="picture">Select a picture:</label>
+                <input type="file" name="picture" accept="image/*">
+                <button type="submit_candidate">Submit candidate</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // JavaScript code to hide the div after a certain duration
+        document.addEventListener('DOMContentLoaded', function () {
+            var messageDiv = document.getElementById('messageDiv');
+            
+            // Check if the element exists before attempting to hide it
+            if (messageDiv) {
+                // Set a timeout to hide the div after 15000 milliseconds (15 seconds)
+                setTimeout(function () {
+                    messageDiv.style.display = 'none';
+                }, 15000);
+            }
+        });
+    </script>
+</body>
+
+</html>

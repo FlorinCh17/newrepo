@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        #sidebar {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            width: 200px;
+            height: 96vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: fixed; 
+            overflow-y: auto;
+        }
+
+        #content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-left: 250px;
+        }
+        .main-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+       }
+
+       .top-section {
+            display: fixed; /* Modificarea de la 'fixed' la 'flex' aici */
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+        }
+
+        #top-columns {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .column {
+            width: 48%;
+            padding: 0 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-section {
+            margin-top: 10px;
+            max-width: 65%; /* Ajustează lățimea formularului */
+            width: 100%;
+        }
+
+        .form-section label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-section input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .form-section button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button {
+            margin-bottom: 20px;
+            padding: 15px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        #logoutbutton {
+            margin-top: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            cursor: pointer;
+            background-color: #1a16e7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        button:hover,
+        #logoutbutton:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            margin-top: 20px;
+            text-align: center;
+            color: blue;
+        }
+
+        #voting-period-text {
+            margin-bottom: 10px;
+        }
+        .contestant-box {
+            width: calc(33.33% - 20px); /* Ajustează dimensiunea pentru a încăpea mai multe boxuri pe linie */
+            height: 580px;
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid black;
+            box-sizing: border-box; /* Asigură că margin și padding sunt incluse în lățime */
+        }
+
+        .contestant-info {
+            margin: 5px 0;
+        }
+
+        .contestant-image img {
+            width: 350px;
+            height: 450px;
+            margin-bottom: 10px;
+        }
+
+        .contestant-image {
+            margin-top: 10px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+            <div id="sidebar">
+                <h1 style="margin-top: 15px; align-self: left"> Hello, </h1>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div style="margin-bottom: 300px; align-self: left">
+                            {{ messages[0] }}
+                    </div>
+                {% endif %}
+                {% endwith %}
+                <button onclick="location.href='/admindashbord'">Dashboard</button>
+                <button onclick="location.href='/voterManagement'">Voter Management</button>
+                <button onclick="location.href='/candidateManagement'">Candidate Management</button>
+                <button onclick="location.href='/finalResults'">Final Results</button>
+                <button onclick="location.href='/viewLedger'">View Ledger</button>
+                <button id="logoutbutton" onclick="location.href='/logout'">Logout</button>
+            </div>
+
+    <div id="content">
+                <div class = "main-section">
+
+                    <h1>Block #{{ block['index'] }}</h1>
+        <form>
+            <label for="block">Block:</label>
+            <input type="text" id="block" name="block" value="{{ block['index'] }}" readonly>
+
+            <label for="nonce">Nonce:</label>
+            <input type="text" id="nonce" name="nonce" value="{{ block['proof'] }}" readonly>
+
+            <label for="coinbase">Coinbase:</label>
+            <input type="text" id="coinbase" name="coinbase" value="{{ block['transactions'][0]['amount'] if block['transactions'] else '' }} -> {{ block['transactions'][0]['receiver'] if block['transactions'] else '' }}" readonly>
+
+            <label for="tx">Tx:</label>
+            <table>
+                {% for tx in block['transactions'] %}
+                <tr>
+                    <td><input type="text" value="${{ tx['amount'] }}" readonly></td>
+                    <td>From: <input type="text" value="{{ tx['sender'] }}" readonly></td>
+                    <td>To: <input type="text" value="{{ tx['receiver'] }}" readonly></td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <label for="prev">Prev:</label>
+            <input type="text" id="prev" name="prev" value="{{ block['previous_hash'] }}" readonly>
+
+            <label for="hash">Hash:</label>
+            <input type="text" id="hash" name="hash
+                
+
+                </div>
+            </div>
+       
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var messageDiv = document.querySelector('.message');
+            if (messageDiv) {
+                setTimeout(function () {
+                    messageDiv.style.display = 'none';
+                }, 15000);
+            }
+        });
+    </script>
+</body>
+
+</html>
